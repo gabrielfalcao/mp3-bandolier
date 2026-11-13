@@ -1,5 +1,5 @@
 use std::collections::BTreeMap;
-
+use std::fmt;
 use id3::{Tag, TagLike, Version};
 use iocore::Path;
 use regex::Regex;
@@ -11,10 +11,6 @@ pub const UNKNOWN_ARTIST: &'static str = "Unknown Artist";
 pub const UNKNOWN_ALBUM: &'static str = "Unknown Album";
 pub const UNKNOWN_TITLE: &'static str = "Unknown Title";
 
-use serde::{
-    de::{Error as SerdeError, Visitor},
-    Deserialize, Deserializer, Serialize, Serializer,
-};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct BasicTags {
@@ -181,70 +177,3 @@ pub fn sanitize_folder_name(name: &str) -> String {
 
     if sanitized.is_empty() { "Unknown".to_string() } else { sanitized }
 }
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//  <<<  SSSSS   EEEEEEE  RRRRRR   DDDDD    EEEEEEE >>>
-// <<<  SS       EE       RR   RR  DD  DD   EE       >>>
-// <<<   SSSSS   EEEEE    RRRRRR   DD   DD  EEEEE    >>>
-// <<<       SS  EE       RR  RR   DD   DD  EE       >>>
-//  <<<  SSSSS   EEEEEEE  RR   RR  DDDDDD   EEEEEEE >>>
-
-impl Serialize for BasicTags {
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let mut state = serializer.serialize_struct("BasicTags", 4)?;
-        state.serialize_field("album", &self.album)?;
-        state.serialize_field("artist", &self.artist)?;
-        state.serialize_field("title", &self.title)?;
-        state.serialize_field("cover", &self.cover.to_base64())?;
-        state.end()
-    }
-}
-
-struct ValueVisitor;
-
-impl<'de> Visitor<'de> for ValueVisitor {
-    type BasicTags = BasicTags;
-
-    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        formatter.write_str("a string representing a hexadecimal number of length 2")
-    }
-
-    fn visit_str<E>(self, value: &str) -> std::result::Result<Self::BasicTags, E>
-    where
-        E: SerdeError,
-    {
-        match BasicTags::from_str(value) {
-            Ok(value) => Ok(value),
-            Err(error) => Err(E::custom(format!(
-                "invalid hexadecimal string of length 2: {error}"
-            ))),
-        }
-    }
-
-    fn visit_string<E>(self, value: String) -> std::result::Result<Self::BasicTags, E>
-    where
-        E: SerdeError,
-    {
-        self.visit_str(&value)
-    }
-}
-
-impl<'de> Deserialize<'de> for BasicTags {
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        deserializer.deserialize_str(ValueVisitor)
-    }
-}
-//  <<<     //  SSSSS   EEEEEEE  RRRRRR   DDDDD    EEEEEEE >>>
-// <<<     /// SS       EE       RR   RR  DD  DD   EE       >>>
-// <<<    ///   SSSSS   EEEEE    RRRRRR   DD   DD  EEEEE    >>>
-// <<<   ///        SS  EE       RR  RR   DD   DD  EE       >>>
-//  <<< ///     SSSSS   EEEEEEE  RR   RR  DDDDDD   EEEEEEE >>>
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
