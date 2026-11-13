@@ -1,5 +1,7 @@
 # mp3-bandolier
 
+![logo.png](logo.png)
+
 Set of tools to manage MP3 files:
 
 - mp3-organizer - moves/clusters files based on ID3 tags falling back to filename structure. (Not good enough, use the "cluster" tool in https://picard.musicbrainz.org/ instead)
