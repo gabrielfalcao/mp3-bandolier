@@ -1,6 +1,6 @@
 # mp3-bandolier
 
-![logo.png](logo.png)
+![docs/logo.png](docs/logo.png)
 
 Set of tools to manage MP3 files:
 
