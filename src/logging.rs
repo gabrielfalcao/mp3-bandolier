@@ -1,5 +1,6 @@
-use crate::Result;
 use fern::colors::{Color, ColoredLevelConfig};
+
+use crate::Result;
 
 pub fn setup_logger(level: Option<log::LevelFilter>) -> Result<()> {
     fern::Dispatch::new()

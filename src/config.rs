@@ -1,4 +1,5 @@
 use std::collections::BTreeMap;
+
 use iocore::Path;
 use serde::{Deserialize, Serialize};
 
@@ -17,10 +18,10 @@ impl Config {
         let mut path = Path::new("~");
         path = path.join(".config");
         if !path.exists() {
-            path.mkdir().expect(&format!("failed to create directory {path:#?}", path=path.to_string()));
+            path.mkdir()
+                .expect(&format!("failed to create directory {path:#?}", path = path.to_string()));
         }
         path
-
     }
     pub fn default_path() -> Path {
         Self::default_config_dir().join(CONFIG_FILENAME)
@@ -37,8 +38,8 @@ impl Config {
         let string = match path.read() {
             Ok(conf) => conf,
             Err(err) => {
-                return Err(Error::RuntimeError(
-                    format!("failed to read config file {path}: {err}",
+                return Err(Error::RuntimeError(format!(
+                    "failed to read config file {path}: {err}",
                     path = path.to_string(),
                 )));
             }

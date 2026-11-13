@@ -1,5 +1,5 @@
-use std::collections::BTreeMap;
-use std::fmt;
+use std::{collections::BTreeMap, fmt};
+
 use id3::{Tag, TagLike, Version};
 use iocore::Path;
 use regex::Regex;
@@ -11,13 +11,12 @@ pub const UNKNOWN_ARTIST: &'static str = "Unknown Artist";
 pub const UNKNOWN_ALBUM: &'static str = "Unknown Album";
 pub const UNKNOWN_TITLE: &'static str = "Unknown Title";
 
-
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct BasicTags {
     pub artist: String,
     pub album: String,
     pub title: String,
-    pub cover: Image,
+    pub cover: Vec<u8>,
 }
 
 pub fn is_mp3(path: &Path) -> bool {

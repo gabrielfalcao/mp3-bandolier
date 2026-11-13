@@ -9,11 +9,7 @@ use iocore::Path;
 
 use crate::{Error, Result};
 
-pub fn set_cover(
-    mp3_path: Path,
-    cover_path: Path,
-    description: Option<String>,
-) -> Result<(), Error> {
+pub fn set_cover(mp3_path: Path, cover_path: Path, description: Option<String>) -> Result<()> {
     // Read an existing tag or create a new one
     let mut tag = Tag::read_from_path(&mp3_path).unwrap_or_else(|_| Tag::new());
 
@@ -24,7 +20,8 @@ pub fn set_cover(
     } else {
         log::warn!("could not guess mime type, falling back to image/jpeg");
         "image/jpeg"
-    };
+    }
+    .to_string();
     let picture = Picture {
         mime_type,
         picture_type: PictureType::CoverFront, // Front cover type

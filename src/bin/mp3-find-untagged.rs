@@ -4,10 +4,9 @@ use std::fs;
 use clap::Parser;
 use iocore::Path;
 use mp3_organizer::{
-    Error,
-    Exit,
     Result,
     dispatch::ParserDispatcher,
+    errors::{Error, Exit},
     is_untagged,
     scan_for_mp3_files,
 };
@@ -30,13 +29,13 @@ impl ParserDispatcher<Error> for Cli {
         if !source_path.is_dir() {
             return Err(Error::InputError(format!("target dir must be an existing directory")));
         }
-        let mp3_files = scan_for_mp3_files(source_path)?;
+        let mp3_files = scan_for_mp3_files(&source_path)?;
         for path in mp3_files.iter() {
-            if is_untagged(&path) {
+            if is_untagged(&path)? {
                 println!("UNTAGGED: {path}")
             }
-            Ok(())
         }
+        Ok(())
     }
 }
 

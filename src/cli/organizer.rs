@@ -3,6 +3,7 @@ use std::fs;
 use clap::Parser;
 use fern::colors::{Color, ColoredLevelConfig};
 use iocore::Path;
+
 use crate::{
     Error,
     Exit,

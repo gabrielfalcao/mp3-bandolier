@@ -5,6 +5,7 @@ use clap::Parser;
 use iocore::Path;
 use mp3_organizer::{
     dispatch::ParserDispatcher,
+    errors::{Error, Exit, Result},
 };
 
 #[derive(Parser, Debug, Clone)]
