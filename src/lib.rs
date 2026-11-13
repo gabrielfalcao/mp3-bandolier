@@ -27,3 +27,6 @@ pub use mp3::{
 
 #[doc(hidden)] pub mod logging;
 #[doc(inline)] pub use logging::setup_logger;
+
+#[doc(hidden)] pub mod cover;
+#[doc(inline)] pub use cover::set_cover;

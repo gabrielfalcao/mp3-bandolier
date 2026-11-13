@@ -39,7 +39,6 @@ codegen-units = 1
 [lib]
 name = "mp3_organizer"
 path = "src/lib.rs"
-
 doctest = false
 bench = false
 
@@ -51,6 +50,7 @@ doctest = false
 bench = false
 doc = false
 test = false
+
 [[bin]]
 name = "mp3-find-untagged"
 path = "src/bin/mp3-find-untagged.rs"
@@ -58,6 +58,15 @@ doctest = false
 bench = false
 doc = false
 test = false
+
+[[bin]]
+name = "mp3-set-cover"
+path = "src/bin/mp3-set-cover.rs"
+doctest = false
+bench = false
+doc = false
+test = false
+
 [[bin]]
 name = "mp3-dedup"
 path = "src/bin/mp3-dedup.rs"
@@ -65,6 +74,7 @@ doctest = false
 bench = false
 doc = false
 test = false
+
 [[bin]]
 name = "mp3-stamp"
 path = "src/bin/mp3-stamp.rs"
@@ -89,6 +99,7 @@ color-eyre = "0.6.5"
 crc = "3.4.0"
 fern = { version = "0.7.1", features = ["colored", "chrono"] }
 id3 = "1.17.2"
+image = { version = "0.25.10", features = ["serde"] }
 iocore = { version = "3.2.0", features = ["walk-glob"] }
 log = "0.4.34"
 regex = "1.13.1"
