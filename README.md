@@ -1,4 +1,4 @@
-# mp3-organizer
+# mp3-bandolier
 
 Set of tools to manage MP3 files:
 
