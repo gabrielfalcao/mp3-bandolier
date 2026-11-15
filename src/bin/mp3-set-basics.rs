@@ -22,11 +22,12 @@ use mp3_organizer::{
     dispatch::ParserDispatcher,
     set_cover,
 };
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct BasicTags {
     pub artist: String,
     pub album: String,
+    pub album_artist: Option<String>,
     pub title: String,
     pub cover: Vec<u8>,
     pub cover_description: Option<String>,
@@ -37,10 +38,12 @@ impl BasicTags {
         tag.set_album(&self.album);
         tag.set_title(&self.title);
         tag.set_artist(&self.artist);
+        if let Some(album_artist) = self.album_artist.clone() {
+            tag.set_album_artist(&album_artist);
+        }
         tag.write_to_path(&path, Version::Id3v24)?;
         let data = self.cover.to_vec();
-        let description =
-            self.cover_description.clone().unwrap_or_else(|| format!("Front Cover"));
+        let description = self.cover_description.clone().unwrap_or_else(|| format!("Front Cover"));
         let mime_type = if let Ok(guessed) = image::guess_format(&data) {
             guessed.to_mime_type()
         } else {
@@ -83,20 +86,26 @@ pub struct Cli {
     #[arg(short = 'A', long)]
     album: String,
 
+    #[arg(long)]
+    album_artist: Option<String>,
+
     #[arg(short, long)]
     cover_image_file: Path,
 
-    #[arg(short, long, default_value = "Front Cover")]
+    #[arg(long, default_value = "Front Cover")]
     cover_description: Option<String>,
 }
 impl Cli {
     pub fn basic_tags(&self) -> Result<BasicTags> {
         let artist = self.artist.to_string();
         let album = self.album.to_string();
+        let album_artist = self.album_artist.clone();
+
         let title = self.title.to_string();
         let cover = self.cover_image_file.read_bytes()?;
         let cover_description = self.cover_description.clone();
-        Ok(BasicTags { artist, album, title, cover, cover_description })
+
+        Ok(BasicTags { artist, album, album_artist, title, cover, cover_description })
     }
     pub fn mp3_file(&self) -> Path {
         self.mp3_file.clone()
