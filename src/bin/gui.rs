@@ -39,10 +39,10 @@ pub struct BasicTags {
 impl BasicTags {
     pub fn load(path: Path) -> Result<BasicTags> {
         let mut tag = Tag::read_from_path(&path).unwrap_or_else(|e| Tag::new());
-        let artist = tag.artist().map(|s|s.to_string()).unwrap_or_default();
-        let album = tag.album().map(|s|s.to_string()).unwrap_or_default();
-        let album_artist = tag.album_artist().map(|s|s.to_string());
-        let title = tag.title().map(|s|s.to_string()).unwrap_or_default();
+        let artist = tag.artist().map(|s| s.to_string()).unwrap_or_default();
+        let album = tag.album().map(|s| s.to_string()).unwrap_or_default();
+        let album_artist = tag.album_artist().map(|s| s.to_string());
+        let title = tag.title().map(|s| s.to_string()).unwrap_or_default();
         // Prefer the front cover, or fall back to the first embedded picture
         let picture = tag
             .pictures()
@@ -109,7 +109,7 @@ impl ParserDispatcher<Error> for Cli {
 #[derive(Default)]
 struct MyApp {
     picked_path: Option<Path>,
-    tags: BasicTags,
+    tags: Option<BasicTags>,
 }
 
 impl eframe::App for MyApp {
@@ -122,37 +122,47 @@ impl eframe::App for MyApp {
                 }
 
                 if let Some(picked_path) = self.picked_path.clone() {
-                    self.tags = BasicTags::load(picked_path.clone()).unwrap();
+                    match BasicTags::load(picked_path.clone()) {
+                        Ok(tags) => {
+                            ui.horizontal(|ui| {
+                                ui.label("Picked file:\n");
+                                ui.monospace(picked_path.to_string());
+                            });
 
-                    ui.horizontal(|ui| {
-                        ui.label("Picked file:\n");
-                        ui.monospace(picked_path.to_string());
-                    });
+                            self.tags = Some(tags)
+                        }
+                        Err(error) => {
+                            ui.colored_label(egui::Color32::RED, format!("Error: {error}"));
+                            self.tags = None
+                        }
+                    }
                 }
             }
+        });
+        if let Some(mut tags) = self.tags.clone() {
             egui::CentralPanel::default().show(ui, |ui| {
                 ui.heading("Edit MP3 file");
                 ui.horizontal(|ui| {
                     let title_label = ui.label("title: ");
-                    ui.text_edit_singleline(&mut self.tags.title).labelled_by(title_label.id);
+                    ui.text_edit_singleline(&mut tags.title).labelled_by(title_label.id);
                 });
                 ui.horizontal(|ui| {
                     let artist_label = ui.label("artist: ");
-                    ui.text_edit_singleline(&mut self.tags.artist).labelled_by(artist_label.id);
+                    ui.text_edit_singleline(&mut tags.artist).labelled_by(artist_label.id);
                 });
                 ui.horizontal(|ui| {
                     let album_label = ui.label("album: ");
-                    ui.text_edit_singleline(&mut self.tags.album).labelled_by(album_label.id);
+                    ui.text_edit_singleline(&mut tags.album).labelled_by(album_label.id);
                 });
                 // let tag = Tag::read_from_path("song.mp3");
 
-                // // ui.label(format!("Hello '{}', age {}", self.tags.title, self.age));
-                // if self.tags.cover {
+                // // ui.label(format!("Hello '{}', age {}", tags.title, self.age));
+                // if tags.cover {
                 // ui.image(egui::include_image!(
                 //     "../../../crates/egui/assets/ferris.png"
                 // ));
             });
-        });
+        }
     }
 }
 fn main() -> Exit {
