@@ -14,7 +14,7 @@ repository = "https://github.com/gabrielfalcao/mp3-organizer"
 keywords = ["mp3", "id3", "tagging", "music", "audio"]
 authors = ["Gabriel DeMoura <gabrielteratos@gmail.com>"]
 categories = ["command-line-interface", "multimedia::audio"]
-default-run = "mp3-set-basics"
+default-run = "mp3-gui"
 
 # categories = [] # https://crates.io/category_slugs
 
@@ -46,6 +46,13 @@ bench = false
 [[bin]]
 name = "mp3-organizer"
 path = "src/bin/mp3-organizer.rs"
+doctest = false
+bench = false
+doc = false
+test = false
+[[bin]]
+name = "mp3-gui"
+path = "src/bin/gui.rs"
 doctest = false
 bench = false
 doc = false
@@ -94,6 +101,8 @@ test = false
 # audiofp = "0.4.5"
 chrono = { version = "0.4.45", features = ["serde"] }
 clap = { version = "4.6.7", features = ["derive", "env", "string", "unicode", "wrap_help"] }
+eframe = "0.37.0"
+egui = "0.37.0"
 # color-eyre = "0.6.5"
 # crc = "3.4.0"
 fern = { version = "0.7.1", features = ["colored", "chrono"] }
@@ -102,6 +111,7 @@ image = { version = "0.25.10", features = ["serde"] }
 iocore = { version = "3.2.0", features = ["walk-glob"] }
 log = "0.4.34"
 regex = "1.13.1"
+rfd = "0.18.0"
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.151"
 # sha3 = "0.12.0"
