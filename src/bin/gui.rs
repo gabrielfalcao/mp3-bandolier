@@ -146,7 +146,7 @@ impl eframe::App for MyApp {
                 });
                 if !self.tags.cover.is_empty() {
                     ui.image(ImageSource::Bytes {
-                        uri: std::borrow::Cow::Borrowed("cover"),
+                        uri: std::borrow::Cow::Borrowed("bytes://"),
                         bytes: self.tags.cover.clone().into(),
                     });
                 }
