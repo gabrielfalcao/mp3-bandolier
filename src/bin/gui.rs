@@ -97,7 +97,7 @@ impl ParserDispatcher<Error> for Cli {
     fn dispatch(&mut self) -> Result<()> {
         let options = eframe::NativeOptions {
             viewport: egui::ViewportBuilder::default()
-                .with_inner_size([640.0, 240.0]) // wide enough for the drag-drop overlay text
+                .with_inner_size([1024.0, 768.0]) // wide enough for the drag-drop overlay text
                 .with_drag_and_drop(true),
             ..Default::default()
         };
@@ -114,6 +114,18 @@ struct MyApp {
 
 impl eframe::App for MyApp {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
+        ui.style_mut().text_styles.insert(
+            egui::TextStyle::Body,
+            egui::FontId::new(24.0, egui::FontFamily::Proportional),
+        );
+        ui.style_mut().text_styles.insert(
+            egui::TextStyle::Heading,
+            egui::FontId::new(32.0, egui::FontFamily::Proportional),
+        );
+        ui.style_mut().text_styles.insert(
+            egui::TextStyle::Button,
+            egui::FontId::new(24.0, egui::FontFamily::Proportional),
+        );
         egui::CentralPanel::default().show(ui, |ui| {
             ui.label("Select MP3 file");
             if ui.button("Open file…").clicked() {
