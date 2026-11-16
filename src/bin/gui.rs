@@ -1,11 +1,11 @@
 #![allow(unused)]
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 #![expect(rustdoc::missing_crate_level_docs)] // it's an example
-
 use std::{fs, io::Cursor};
 
 use clap::Parser;
 use eframe::egui;
+use egui::widgets::ImageSource;
 use fern::colors::{Color, ColoredLevelConfig};
 use id3::{
     Frame,
@@ -39,10 +39,10 @@ pub struct BasicTags {
 impl BasicTags {
     pub fn load(path: Path) -> Result<BasicTags> {
         let mut tag = Tag::read_from_path(&path).unwrap_or_else(|e| Tag::new());
-        let artist = tag.artist().map(|s|s.to_string()).unwrap_or_default();
-        let album = tag.album().map(|s|s.to_string()).unwrap_or_default();
-        let album_artist = tag.album_artist().map(|s|s.to_string());
-        let title = tag.title().map(|s|s.to_string()).unwrap_or_default();
+        let artist = tag.artist().map(|s| s.to_string()).unwrap_or_default();
+        let album = tag.album().map(|s| s.to_string()).unwrap_or_default();
+        let album_artist = tag.album_artist().map(|s| s.to_string());
+        let title = tag.title().map(|s| s.to_string()).unwrap_or_default();
         // Prefer the front cover, or fall back to the first embedded picture
         let picture = tag
             .pictures()
@@ -144,13 +144,12 @@ impl eframe::App for MyApp {
                     let album_label = ui.label("album: ");
                     ui.text_edit_singleline(&mut self.tags.album).labelled_by(album_label.id);
                 });
-                // let tag = Tag::read_from_path("song.mp3");
-
-                // // ui.label(format!("Hello '{}', age {}", self.tags.title, self.age));
-                // if self.tags.cover {
-                // ui.image(egui::include_image!(
-                //     "../../../crates/egui/assets/ferris.png"
-                // ));
+                if !self.tags.cover.is_empty() {
+                    ui.image(ImageSource::Bytes {
+                        uri: std::borrow::Cow::Borrowed("cover"),
+                        bytes: self.tags.cover.clone().into(),
+                    });
+                }
             });
         });
     }
