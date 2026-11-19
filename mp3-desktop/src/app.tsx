@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { invoke, Channel } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-import FilterableList from './components/filterable-list'
 import Container from "react-bootstrap/Container";
 import Alert from "react-bootstrap/Alert";
 
@@ -10,11 +9,10 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
-type SelectedFile = string;
 
 function App() {
   const [file, setFile] = useState("");
-  const onEvent = new Channel<SelectedFile>();
+  const onEvent = new Channel<string>();
   onEvent.onmessage = (message) => {
     setFile(message.event);
   };
